@@ -1,9 +1,5 @@
 %% Use Zhenjie Yan's library to get profiles from geometries
 
-%Note MOT is quad so anti-Helmholtz, 
-%while Feshbach/bias are uniform so Helmholtz,
-%and curvature ???
-
 clear all; close all; clc;
 
 addpath('Library/')
@@ -416,7 +412,7 @@ subplot(1,3,1)
 Kfx = FiniteD( x,x*0,Gfx,x*0,1);
 h=plot(x*10,Kfx,'color','b','Displayname','x-field','linewidth',2);
 legend('show','location','southwest')
-ylabel('B_x with unit current (G/cm/A)');
+ylabel('gradB_x with unit current (G/cm/A)');
 xlabel('x position (mm)');
 
 subplot(1,3,2)
@@ -424,15 +420,38 @@ Kfy = FiniteD( y,y*0,Gfy,y*0,1);
 h=plot(y*10,Kfy,'color','g','Displayname','y-field','linewidth',2);
 title('Science Cell fast coil gradients');
 legend('show','location','southwest')
-ylabel('B_y with unit current (G/cm/A)');
+ylabel('gradB_y with unit current (G/cm/A)');
 xlabel('y position (mm)');
 
 subplot(1,3,3)
 Kfz = FiniteD( z,z*0,Gfz,z*0,1);
 h=plot(z*10,Kfz,'color','r','Displayname','z-field','linewidth',2);
 legend('show','location','southwest')
-ylabel('B_z with unit current (G/cm/A)');
+ylabel('gradB_z with unit current (G/cm/A)');
 xlabel('z position (mm)');
+
+%%
+%Testing rectangular coil code
+Rectangular_B_field_pair(1,1,1,0,0,0,[1,0,0],1,10,10,0,10); %CHECK UNITS ON THIS AND THE FUNCTIONS INSIDE!!!!!
+
+x=linspace(-10,10,1000);
+RMx=x*0;
+for i=1:length(x)
+    temp=Rectangular_B_field_pair(x(i),0,0,0,0,0,[1,0,0],1,10,10,3.6,10); %Something fishy...
+    RMx(i)=temp(1);
+end
+
+subplot(1,2,1)
+h=plot(x*10,RMx);
+title('Rectangle coil pair test');
+ylabel('Magnetic field with unit current (G/A)');
+xlabel('x position (mm)');xlim([min(x),max(x)])
+
+subplot(1,2,2)
+Kfx = FiniteD( x,x*0,RMx,x*0,1);
+h=plot(x*10,Kfx);
+ylabel('Gradient (G/cm/A)');
+xlabel('x position (mm)');xlim([min(x),max(x)])
 
 %% Total main z
 
